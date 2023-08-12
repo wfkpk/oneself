@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String   @default("oneself user")
+  email        String?  @unique
+  username     String   @unique @default(cuid())
+  firebaseUid  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  mailVerified Boolean? @default(false)
+  bio          String?
+  avatar       String?
+  notes        Note[]
+}
+
+model Note {
+  id           String   @id @default(cuid())
+  content      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     String
+  parentNote   Note?    @relation("ParentChild", fields: [parentNoteId], references: [id])
+  parentNoteId String?
+  childNotes   Note[]   @relation("ParentChild")
+}
