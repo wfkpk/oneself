@@ -46,7 +46,7 @@ export class NotesController {
   ): Promise<Response> {
     const userId = req.headers['userId'];
     return {
-      data: this.notesService.getNotesByDate(userId, date),
+      data: await this.notesService.getNotesByDate(userId, date),
     };
   }
 
@@ -60,7 +60,10 @@ export class NotesController {
   ): Promise<Response> {
     const userId = req.headers['userId'];
     return {
-      data: this.notesService.getNotesByParentNoteId(userId, parentNoteId),
+      data: await this.notesService.getNotesByParentNoteId(
+        userId,
+        parentNoteId,
+      ),
     };
   }
 
@@ -74,7 +77,7 @@ export class NotesController {
   ): Promise<Response> {
     const userId = req.headers['userId'];
     return {
-      data: this.notesService.createNote(userId, createNoteDto),
+      data: await this.notesService.createNote(userId, createNoteDto),
     };
   }
 
@@ -89,7 +92,7 @@ export class NotesController {
   ): Promise<Response> {
     const userId = req.headers['userId'];
     return {
-      data: this.notesService.updateNote(userId, noteId, updateNoteDto),
+      data: await this.notesService.updateNote(userId, noteId, updateNoteDto),
     };
   }
 }

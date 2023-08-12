@@ -28,9 +28,11 @@ export class NotesService {
         createdAt: true,
         updatedAt: true,
         childNotes: true,
-        parentNote: true,
         authorId: true,
         parentNoteId: true,
+        _count: {
+          select: { childNotes: true },
+        },
       },
     });
 
