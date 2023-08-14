@@ -16,9 +16,11 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   mailVerified Boolean? @default(false)
-  bio          String?
-  avatar       String?
-  notes        Note[]
+
+  notes  Note[]
+  Streak Streak[]
+
+  @@index([email, firebaseUid])
 }
 
 model Note {
@@ -26,9 +28,31 @@ model Note {
   content      String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  author       User     @relation(fields: [authorId], references: [id])
   authorId     String
-  parentNote   Note?    @relation("ParentChild", fields: [parentNoteId], references: [id])
   parentNoteId String?
-  childNotes   Note[]   @relation("ParentChild")
+
+  parentNote Note? @relation("ParentChild", fields: [parentNoteId], references: [id])
+  author     User  @relation(fields: [authorId], references: [id])
+
+  childNotes Note[]   @relation("ParentChild")
+  Streak     Streak[]
+
+  @@index([authorId, parentNoteId])
+}
+
+model Streak {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  authorId     String
+  noteId       String
+  streak       Int      @default(0)
+  lastStreak   DateTime @default(now())
+  bestStreak   Int      @default(0)
+  bestStreakAt DateTime @default(now())
+
+  note   Note @relation(fields: [noteId], references: [id])
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([authorId, noteId])
 }

@@ -16,13 +16,16 @@ export class UserService {
     const firebaseEmail = firebaseUser.email;
     const mailVerified = firebaseUser.email_verified;
 
-    const alreadyUser = await this.prisma.user.findUnique({
+    const isUser = await this.prisma.user.findUnique({
       where: {
-        email: firebaseEmail as string,
+        email: firebaseEmail,
       },
     });
+    if (isUser) {
+      throw new BadRequestException('user already exists');
+    }
 
-    if (alreadyUser) {
+    if (isUser.firebaseUid !== firebaseUid) {
       throw new BadRequestException('user already exists');
     }
     const user = await this.prisma.user.create({
@@ -44,7 +47,6 @@ export class UserService {
       select: {
         id: true,
         name: true,
-        bio: true,
         email: true,
         mailVerified: true,
         createdAt: true,
